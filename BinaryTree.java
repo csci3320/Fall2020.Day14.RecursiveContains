@@ -7,6 +7,48 @@ public class BinaryTree<T extends Comparable> implements MyCollection<T>{
         root = null;
     }
 
+    public String getDigraph() {
+		if (root == null) {
+			return "root->null";
+		}
+		return "root->" + root.getValue()  + "\n" + digraph(root);
+    }
+    
+    public String digraph(Node<T> node){
+
+    
+		if (node == null)
+			return "";
+		Node<T> left = node.getLeft();
+		Node<T> right = node.getRight();
+
+		String nodeValue = node.getValue().toString() ;
+
+		String leftValue = "";
+		String rightValue = "";
+		String middle = "";
+
+		var showNull = false;
+		if (showNull) {
+			leftValue = left == null ? "null_l_" + nodeValue : left.getValue().toString();
+			rightValue = right == null ? "null_r_" + nodeValue : right.getValue().toString();
+			middle = nodeValue + "->" + leftValue + "[label=\"left\"]\n" + nodeValue + "->" + rightValue
+					+ "[label=\"right\"]\n";
+		} else {
+			leftValue = left == null ? "null" : left.getValue().toString() ;
+			rightValue = right == null ? "null" : right.getValue().toString() ;
+			if (!(leftValue.contentEquals("null"))) {
+				middle += nodeValue + "->" + leftValue + "[label=\"left\"]\n";
+			}
+			if (!(rightValue.contentEquals("null"))) {
+				middle += nodeValue + "->" + rightValue + "[label=\"right\"]\n";
+			}
+
+		}
+
+		return digraph(left) + middle + digraph(right);
+	}
+
     public void add(T toAdd){
         Node<T> node = new Node<T>(toAdd);
         if(root == null){
@@ -19,6 +61,8 @@ public class BinaryTree<T extends Comparable> implements MyCollection<T>{
 
     public void addNode(Node<T> parentNode, Node<T> toAdd){
         if(toAdd.getValue().compareTo(parentNode.getValue()) <= 0){
+            parentNode.addedLeft();
+
             //Go left
             if(parentNode.getLeft() == null){
                 parentNode.setLeft(toAdd);
@@ -28,6 +72,7 @@ public class BinaryTree<T extends Comparable> implements MyCollection<T>{
             }
         }
         else{
+            parentNode.addedRight();
             //Go right
             if(parentNode.getRight() == null){
                 parentNode.setRight(toAdd);
